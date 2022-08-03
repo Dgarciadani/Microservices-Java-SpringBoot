@@ -10,13 +10,13 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-//@Entity
+@Entity
 public class CurrencyExchange {
-    //@Id
+    @Id
     private Long id;
-  //  @Column(name = "currency_from")
+    @Column(name = "currency_from")
     private String from;
-  //  @Column(name = "currency_to")
+    @Column(name = "currency_to")
     private String to;
     private BigDecimal conversionMultiple;
 
