@@ -1,13 +1,13 @@
-package com.grego.curencyexchangeservice;
+package com.grego.currencyexchangeservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CurencyExchangeServiceApplication {
+public class CurrencyExchangeServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(CurencyExchangeServiceApplication.class, args);
+		SpringApplication.run(CurrencyExchangeServiceApplication.class, args);
 	}
 
 }
