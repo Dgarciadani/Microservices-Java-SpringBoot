@@ -19,7 +19,7 @@ public class CurrencyExchangeController {
     private Environment environment;
 
     @GetMapping("/currency-exchange/from/{from}/to/{to}")
-    public CurrencyExchange retrieveEchangeValue(@PathVariable String from, @PathVariable String to) {
+    public CurrencyExchange retrieveExchangeValue(@PathVariable String from, @PathVariable String to) {
         CurrencyExchange currencyExchange = currencyExchangeRepository.findByFromAndTo(from, to);
         String port = environment.getProperty("local.server.port");
         currencyExchange.setEnvironment(port);
