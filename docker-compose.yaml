@@ -3,7 +3,7 @@ version: '3.7'
 services:
   currency-exchange:
     image: gregogc/mmv2-currency-exchange-service:0.0.1-SNAPSHOT
-    mem_limit: 700m
+    mem_limit: 900m
     ports:
       - "8000:8000"
     networks:
@@ -13,6 +13,8 @@ services:
       - spring-cloud-config-server
     environment:
       EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://currency-naming-server:8761/eureka/
+      SPRING.CONFIG.IMPORT: optional:configserver://spring-cloud-config-server:8888
+      SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411/
 
   currency-conversion-service:
     image: gregogc/mmv2-currency-conversion-service:0.0.1-SNAPSHOT
@@ -26,6 +28,8 @@ services:
       - spring-cloud-config-server
     environment:
       EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://currency-naming-server:8761/eureka/
+      SPRING.CONFIG.IMPORT: optional:configserver://spring-cloud-config-server:8888
+      SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411/
 
   currency-naming-server:
     image: gregogc/mmv2-currency-naming-server:0.0.1-SNAPSHOT
@@ -55,6 +59,15 @@ services:
       - spring-cloud-config-server
     environment:
       EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://currency-naming-server:8761/eureka/
+      SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411/
+  zipkin-server:
+    image: openzipkin/zipkin
+    mem_limit: 300m
+    ports:
+      - "9411:9411"
+    networks:
+      - currency-network
+    restart: always #Restart if there is a problem starting up
 
 networks:
   currency-network:
