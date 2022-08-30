@@ -1,0 +1,60 @@
+version: '3.7'
+
+services:
+  currency-exchange:
+    image: gregogc/mmv2-currency-exchange-service:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    ports:
+      - "8000:8000"
+    networks:
+      - currency-network
+    depends_on:
+      - currency-naming-server
+      - spring-cloud-config-server
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://currency-naming-server:8761/eureka/
+
+  currency-conversion-service:
+    image: gregogc/mmv2-currency-conversion-service:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    ports:
+      - "8100:8100"
+    networks:
+      - currency-network
+    depends_on:
+      - currency-naming-server
+      - spring-cloud-config-server
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://currency-naming-server:8761/eureka/
+
+  currency-naming-server:
+    image: gregogc/mmv2-currency-naming-server:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    ports:
+      - "8761:8761"
+    networks:
+      - currency-network
+  spring-cloud-config-server:
+    image: gregogc/mmv2-spring-cloud-config-server:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    ports:
+      - "8888:8888"
+    networks:
+      - currency-network
+    environment:
+      SPRING.CLOUD.CONFIG.SERVER.GIT.URI: https://github.com/Dgarciadani/git-localconfig-repo-microservices.git
+  api-gateway:
+    image: gregogc/mmv2-api-gateway:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    ports:
+      - "8765:8765"
+    networks:
+      - currency-network
+    depends_on:
+      - currency-naming-server
+      - spring-cloud-config-server
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://currency-naming-server:8761/eureka/
+
+networks:
+  currency-network:
