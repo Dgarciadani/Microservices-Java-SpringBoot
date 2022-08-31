@@ -11,10 +11,16 @@ services:
     depends_on:
       - currency-naming-server
       - spring-cloud-config-server
+      - rabbitmq
     environment:
       EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://currency-naming-server:8761/eureka/
       SPRING.CONFIG.IMPORT: optional:configserver://spring-cloud-config-server:8888
       SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411/
+      RABBIT_URI: amqp://guest:guest@rabbitmq:5672
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_ZIPKIN_SENDER_TYPE: rabbit
+ # ----------------------------------------------------------------
+
 
   currency-conversion-service:
     image: gregogc/mmv2-currency-conversion-service:0.0.1-SNAPSHOT
@@ -26,10 +32,16 @@ services:
     depends_on:
       - currency-naming-server
       - spring-cloud-config-server
+      - rabbitmq
     environment:
       EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://currency-naming-server:8761/eureka/
       SPRING.CONFIG.IMPORT: optional:configserver://spring-cloud-config-server:8888
       SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411/
+      RABBIT_URI: amqp://guest:guest@rabbitmq:5672
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_ZIPKIN_SENDER_TYPE: rabbit
+# ----------------------------------------------------------------
+
 
   currency-naming-server:
     image: gregogc/mmv2-currency-naming-server:0.0.1-SNAPSHOT
@@ -47,6 +59,10 @@ services:
       - currency-network
     environment:
       SPRING.CLOUD.CONFIG.SERVER.GIT.URI: https://github.com/Dgarciadani/git-localconfig-repo-microservices.git
+
+ # ----------------------------------------------------------------
+
+
   api-gateway:
     image: gregogc/mmv2-api-gateway:0.0.1-SNAPSHOT
     mem_limit: 700m
@@ -57,9 +73,15 @@ services:
     depends_on:
       - currency-naming-server
       - spring-cloud-config-server
+      - rabbitmq
     environment:
       EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://currency-naming-server:8761/eureka/
       SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411/
+      RABBIT_URI: amqp://guest:guest@rabbitmq:5672
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_ZIPKIN_SENDER_TYPE: rabbit
+ # ----------------------------------------------------------------
+
   zipkin-server:
     image: openzipkin/zipkin
     mem_limit: 300m
@@ -68,6 +90,27 @@ services:
     networks:
       - currency-network
     restart: always #Restart if there is a problem starting up
+    depends_on:
+      - rabbitmq
+    environment:
+      RABBIT_URI: amqp://guest:guest@rabbitmq:5672
+
+
+
+ # ----------------------------------------------------------------
+
+
+  rabbitmq:
+    image: rabbitmq
+    mem_limit: 300m
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - currency-network
+
+      
+
 
 networks:
   currency-network:
