@@ -101,7 +101,7 @@ services:
 
 
   rabbitmq:
-    image: rabbitmq
+    image: rabbitmq:management
     mem_limit: 300m
     ports:
       - "5672:5672"
@@ -110,7 +110,6 @@ services:
       - currency-network
 
       
-
 
 networks:
   currency-network:
